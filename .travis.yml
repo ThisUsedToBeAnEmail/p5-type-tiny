@@ -13,8 +13,10 @@ matrix:
     # Archaic Perls
     - perl: "5.6.1"
       env: PERL_TYPE_TINY_XS=0 
+      script: prove -r -Ilib -Iinc -I/home/travis/perl5/perlbrew/perls/5.8/lib/5.8.8 $(test-dirs)
     - perl: "5.6.2"
       env: PERL_TYPE_TINY_XS=0 
+      script: prove -r -Ilib -Iinc -I/home/travis/perl5/perlbrew/perls/5.8/lib/5.8.8 $(test-dirs)
     - perl: "5.8.1"
       env: PERL_TYPE_TINY_XS=0
 before_install:
