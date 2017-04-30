@@ -3,13 +3,6 @@ env:
   - PERL_TYPE_TINY_XS=0
   - PERL_TYPE_TINY_XS=1
 perl:
-  - "5.10"
-  - "5.12"
-  - "5.14"
-  - "5.16"
-  - "5.18"
-  - "5.20"
-  - "5.22"
   - "5.24"
 matrix:
   allow_failures:
@@ -17,24 +10,6 @@ matrix:
     - perl: "5.6.2"
     - perl: "5.8.1"
   include:
-    # Coverage report
-    - perl: "5.18"
-      env: COVERAGE=1 EXTENDED_TESTING=1
-      install:
-        - cpanm Exporter::Tiny
-        - cpanm -n Test::Requires Test::Fatal Test::LeakTrace Test::Tester Test::Warnings
-        - cpanm -n indirect multidimensional bareword::filehandles strictures
-        - cpanm -n Moo Moose Mouse MooseX::Types::Common MouseX::Types::Common
-        - cpanm -n match::simple MooseX::Getopt Class::InsideOut Object::Accessor
-        - cpanm -n Type::Tie Validation::Class::Simple 
-        - cpan-install --toolchain
-        - cpan-install --deps
-        - cpan-install --coverage
-      script:
-        - export PERL_TYPE_TINY_XS=0
-        - prove -r -Ilib -Iinc $(test-dirs)
-        - export PERL_TYPE_TINY_XS=1
-        - prove -r -Ilib -Iinc $(test-dirs)
     # Archaic Perls
     - perl: "5.6.1"
       env: PERL_TYPE_TINY_XS=0 
@@ -42,50 +17,6 @@ matrix:
       env: PERL_TYPE_TINY_XS=0 
     - perl: "5.8.1"
       env: PERL_TYPE_TINY_XS=0
-    # Threaded Perls
-    - perl: "5.8.9-thr"
-      env: PERL_TYPE_TINY_XS=0
-    - perl: "5.20.0-thr"
-      env: PERL_TYPE_TINY_XS=0
-    - perl: "5.20.0-thr"
-      env: PERL_TYPE_TINY_XS=1
-    # Extended testing on both a Modern and older Perl
-    - perl: "5.8.9"
-      env: PERL_TYPE_TINY_XS=0 EXTENDED_TESTING=1
-      install:
-        - cpanm Exporter::Tiny
-        - cpanm -n Test::Requires Test::Fatal Test::LeakTrace
-        - cpanm -n indirect multidimensional bareword::filehandles strictures
-        - cpanm -n Moo Moose Mouse MooseX::Types::Common MouseX::Types::Common
-        - cpanm -n match::simple MooseX::Getopt Class::InsideOut Object::Accessor
-        - cpanm -n Type::Tie
-        - cpan-install --toolchain
-        - cpan-install --deps
-        - cpan-install --coverage
-    - perl: "5.20"
-      env: PERL_TYPE_TINY_XS=0 EXTENDED_TESTING=1
-      install:
-        - cpanm Exporter::Tiny
-        - cpanm -n Test::Requires Test::Fatal Test::LeakTrace
-        - cpanm -n indirect multidimensional bareword::filehandles strictures
-        - cpanm -n Moo Moose Mouse MooseX::Types::Common MouseX::Types::Common
-        - cpanm -n match::simple MooseX::Getopt Class::InsideOut Object::Accessor
-        - cpanm -n Type::Tie Validation::Class::Simple 
-        - cpan-install --toolchain
-        - cpan-install --deps
-        - cpan-install --coverage
-    # Strict Num
-    - perl: "5.18"
-      env: PERL_TYPES_STANDARD_STRICTNUM=1 PERL_TYPE_TINY_XS=0 EXTENDED_TESTING=1
-    - perl: "5.18"
-      env: PERL_TYPES_STANDARD_STRICTNUM=1 PERL_TYPE_TINY_XS=1 EXTENDED_TESTING=1
-    # Older Moose/Moo
-    - perl: "5.20"
-      env: MOO_RELEASE=HAARG/Moo-1.004006.tar.gz
-    - perl: "5.16"
-      env: MOOSE_RELEASE=DOY/Moose-2.0604.tar.gz MOO_RELEASE=MSTROUT/Moo-1.000008.tar.gz
-    - perl: "5.12"
-      env: MOOSE_RELEASE=FLORA/Moose-2.0007.tar.gz EC_RELEASE="https://cpan.metacpan.org/authors/id/D/DO/DOY/Eval-Closure-0.06.tar.gz"
 before_install:
   - export DIST_INKT_PROFILE="Dist::Inkt::Profile::TOBYINK"
   - git clone git://github.com/tobyink/perl-travis-helper ~/perl-travis-helper
@@ -98,6 +29,7 @@ install:
   - cpan-install --toolchain
   - cpan-install --deps
   - cpan-install --coverage
+  - find /home/travis/perl5/perlbrew/ -name More.pm || true
   - '[ -n "$MOOSE_RELEASE" ] && cpan-install "$MOOSE_RELEASE" || echo "MOOSE_RELEASE is not set"'
   - '[ -n "$EC_RELEASE" ]    && cpan-install "$EC_RELEASE"    || echo "EC_RELEASE is not set"'
   - '[ -n "$MOO_RELEASE" ]   && cpan-install "$MOO_RELEASE"   || echo "MOO_RELEASE is not set"'
